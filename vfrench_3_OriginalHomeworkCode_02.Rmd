@@ -24,6 +24,8 @@ Every Saturday morning, at the same time, a primatologist goes and sits in the f
 
 - The ppois will output the probability (area under the curve) up to (left of) the specified quantile. Since we know probabilities must sum to 1 we can subtract ppois output from 1 to get the area under the curve to the right of the count. 
 
+##NK: It totally works to subtract ppois from 1. However, another option is to write lower = FALSE in the argument. This means rather than taking the area to the left, it will take the area to the right of the specified point. 
+
 ```{r}
 1-ppois(q=8, lambda=15) #specifying q as 8 because we want MORE than (not including) 8. If it was more than or equal to 8 we would argue q as the realization one step down (aka 7)
 ```
@@ -35,23 +37,26 @@ What is the probability that she will hear no calls in a session?
 ```{r}
 dpois(x=0, lambda=15) #if we rounded it to significant decimal places it would be 0% chance. 
 ```
+##NK: for this one yours makes more sense. I used ppois which accomplished the same thing because x=0. However, for any other number I would've wanted to use dpois. 
 
 What is the probability that she will hear exactly 3 calls in a session?
 
 ```{r}
 dpois(3,15)
 ```
+##NK: I did the same thing here. 
 
 Plot the relevant Poisson mass function over the values in range 0 ≤ x ≤ 30.
 
 - This looks good as the poisson distribution probability mass values characteristically peak near the expected mean value and go to zero as x approaches infinity. 
 
 ```{r}
-barplot(height=dpois(0:30,15),ylim = 0:1, space=0, names.arg = 0:30, ylab = "Pr(X=x)", xlab='x', main= "Probability Mass Function of Titis Monkey Call Counts") 
+barplot(height=dpois(0:30,15), space=0, names.arg = 0:30, ylab = "Pr(X=x)", xlab='x', main= "Probability Mass Function of Titis Monkey Call Counts") 
 # height = a vector to describe the bars of the plot. We use the dpois to calculate a vector of probability mass values for the counts 0 through 30 inclusive. 
 #ylim is set from 0 to 1 because a probability must be within that range 
 #names.arg is specifying the individual bar labels. In this case our count realizations (a sequence from 0-30)
 ```
+#If you simply remove ylim, r automatically fits your data, so you have a lot less blank space. When you specify 1, it's hard to read your bar plot, but I'm not sure how to specifiy a value below 1. 
 
 Simulate 104 results from this distribution (i.e., 2 years of Saturday monitoring sessions)
 
@@ -63,6 +68,7 @@ set.seed(1)
 rpois(n=104,15) 
 #n argument for the rpois is indicating the number of variates you want to generate. #second argument is still the lambda value. 
 ```
+##NK: Does it matter in this case whether or not you use set.seed? 
 
 Plot the simulated results using hist() and use xlim() to set the horizontal limits to be from 0 to 30. How does your histogram compare to the shape of the probability mass function you plotted above?
 
@@ -79,4 +85,6 @@ hist(x,xlim= c(0,30), main = "Histogram of Titus Monkey Call Counts", xlab= 'Cou
 ## Challenges 
 
 1. When using the histogram function I originally thought xlim needed to be denoted by the entire sequence 0:30. After looking on stack overflow and at the documentation the xlim argument needs to be a vector containing only the minimum and maximum value of a range. 
+#I had this same issue! I also found the answer online somewhere. 
 2. NA: After reading The Book of R Chapter 16 section on poisson distribution the exercises were extremely straight forward. (Even though I do have some questions still as to how the lambda value is generated or if that is something that will always be given in this class?)
+#Your work was very easy to read. Overall, I think we approached it similarly. I think in the future, I will also copy in the question prompts, so people don't have to refer to the module when making comments. 
