@@ -1,0 +1,83 @@
+---
+title: "vfrench3_FinalHomeworkCode_02"
+author: "Victoria French"
+date: "9/30/2021"
+output: html_document
+---
+
+# Homework 2: Titis in the Mist 
+
+Every Saturday morning, at the same time, a primatologist goes and sits in the forest to listen for titi monkey calls, counting the number of calls they hear in a 2 hour window from 5am to 7am. Based on previous knowledge, she believes that the mean number of calls she will hear in that time is exactly 15. Let X represent the appropriate Poisson random variable of the number of calls heard in each monitoring session.
+
+## Notes on the Poisson Distribution 
+
+- Can use the Poisson distribution because the data is a count of a discrete random variable. We are assuming the events/counts are independent from one another. The events are being counted during a well defined interval.
+
+- the mean (expected value) for the poisson distribution is equivalent to the lambda p parameter as well as the variance. 
+
+## Exercises
+
+1. What is the probability that she will hear more than 8 calls during any given session?
+
+- Asking for the cumulative probability means we should call on the p-function associated with the poisson distribution as this will provide cumulative distribution probability values. 
+  - This will be based on probability mass values as opposed to probability density values because we are working with discrete (not continuous) random variables. 
+
+- The ppois will output the probability (area under the curve) up to (left of) the specified quantile. Since we know probabilities must sum to 1 we can subtract ppois output from 1 to get the area under the curve to the right of the count. 
+
+```{r, cumulative probability function}
+1-ppois(q=8, lambda=15) #specifying q as 8 because we want MORE than (not including) 8. If it was more than or equal to 8 we would argue q as the realization one step down (aka 7)
+
+ppois(q=8, lambda=15, lower.tail = FALSE) #can also argue for the upper tail probability
+```
+
+What is the probability that she will hear no calls in a session?
+
+- asking for probability of a singular realization so must call on the d-function which will output a probability density value. 
+
+```{r, probability mass function 1}
+dpois(x=0, lambda=15) #if we rounded it to significant decimal places it would be 0% chance. 
+```
+
+What is the probability that she will hear exactly 3 calls in a session?
+
+```{r, probablity mass function 2}
+dpois(3,15) 
+```
+
+Plot the relevant Poisson mass function over the values in range 0 ≤ x ≤ 30.
+
+- This looks good as the poisson distribution probability mass values characteristically peak near the expected mean value and go to zero as x approaches infinity. 
+
+```{r, PMF histogram}
+barplot(height=dpois(0:30,15), space=0, names.arg = 0:30, ylab = "Pr(X=x)", xlab='x', main= "Probability Mass Function of Titis Monkey Call Counts") 
+# height = a vector to describe the bars of the plot. We use the dpois to calculate a vector of probability mass values for the counts 0 through 30 inclusive. 
+#names.arg is specifying the individual bar labels. In this case our count realizations (a sequence from 0-30)
+```
+
+Simulate 104 results from this distribution (i.e., 2 years of Saturday monitoring sessions)
+
+- random generation/simulation indicates we use the associated r-function
+
+```{r, Random generation}
+set.seed(1) 
+#use set seed to retain the exact random generation. 
+rpois(n=104,15) 
+#n argument for the rpois is indicating the number of variates you want to generate. #second argument is still the lambda value. 
+```
+
+Plot the simulated results using hist() and use xlim() to set the horizontal limits to be from 0 to 30. How does your histogram compare to the shape of the probability mass function you plotted above?
+
+- The histogram looks very similar to the previously plotted probability mass function indicating the generated data is indeed following a poisson distribution. Some differences are there is not a perfect peak at the lambda p parameter (15) and the plot is no longer perfectly symmetrical, but that is to be expected when working with actual data points over probabilities as probabilities are just an estimate of chance and actual data has a chance for random error. 
+
+```{r, rpois histogram}
+set.seed(1)
+#calling set.seed to generate the same data to plot as was generated in the previous exercise
+x <- rpois(n=104,15) 
+#assigning the data to a random variable x to plug into the hist data argument
+hist(x,xlim= c(0,30), main = "Histogram of Titus Monkey Call Counts", xlab= 'Count', ylab = 'Count Frequency')
+```
+
+## Challenges 
+
+1. When using the histogram function I originally thought xlim needed to be denoted by the entire sequence 0:30. After looking on stack overflow and at the documentation the xlim argument needs to be a vector containing only the minimum and maximum value of a range. 
+2. NA
